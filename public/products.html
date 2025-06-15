@@ -908,9 +908,23 @@
         }
     }
     
+    const categoryMap = {
+        electronics: 1,
+        clothing: 2,
+        home: 3,
+        books: 4,
+        toys: 5,
+        beauty: 6,
+        sports: 7,
+        groceries: 8
+    };
+
     function getSelectedCategories() {
         const checkboxes = document.querySelectorAll('#filterModal .filter-options input[type="checkbox"]:checked');
-        return Array.from(checkboxes).map(cb => cb.id).join(',');
+        return Array.from(checkboxes)
+            .map(cb => categoryMap[cb.id])
+            .filter(id => id !== undefined)
+            .join(',');
     }
     
     function getSelectedLocations() {

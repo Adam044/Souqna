@@ -201,7 +201,7 @@ app.get('/api/products', (req, res) => {
     }
     if (category) {
         const categories = category.split(',');
-        sql += ` AND category IN (${categories.map(() => '?').join(',')})`;
+        sql += ` AND category_id IN (${categories.map(() => '?').join(',')})`;
         params.push(...categories);
     }
     if (location) {
