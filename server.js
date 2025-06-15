@@ -1,27 +1,39 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
 const path = require('path');
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose(); // Critical for SQLite
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// Database setup
-const db = new sqlite3.Database('./souqna.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) return console.error(err.message);
-    console.log('Connected to souqna.db');
+const dbPath = process.env.DATABASE_URL || './souqna.db';
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error('Database connection error:', err.message);
+        process.exit(1); // Exit if we can't connect to the database
+    }
+    console.log('Connected to the database');
 });
+
+// Load .env FIRST (before any other code)
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
+// Validate critical env variables
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET not set in .env');
+  process.exit(1); // Crash immediately if missing
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const PORT = process.env.PORT || 10000;
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// JWT Secret
-const JWT_SECRET = 'your_jwt_secret_here';
 
 // Image upload setup
 const storage = multer.diskStorage({
