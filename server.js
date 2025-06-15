@@ -191,19 +191,37 @@ app.get('/api/user', authenticateToken, (req, res) => {
 
 // Get all products
 app.get('/api/products', (req, res) => {
-    db.all(
-        'SELECT p.*, u.name as seller_name, u.location as seller_location FROM products p JOIN users u ON p.seller_id = u.id ORDER BY p.created_at DESC LIMIT 12',
-        (err, products) => {
-            if (err) return res.status(500).json({ error: 'حدث خطأ أثناء جلب المنتجات' });
-            
-            const formattedProducts = products.map(product => ({
-                ...product,
-                images: JSON.parse(product.images)
-            }));
-            
-            res.json(formattedProducts);
-        }
-    );
+    let { search, category, location, minPrice, maxPrice } = req.query;
+    let sql = 'SELECT * FROM products WHERE 1=1';
+    let params = [];
+
+    if (search) {
+        sql += ' AND (title LIKE ? OR description LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`);
+    }
+    if (category) {
+        const categories = category.split(',');
+        sql += ` AND category IN (${categories.map(() => '?').join(',')})`;
+        params.push(...categories);
+    }
+    if (location) {
+        const locations = location.split(',');
+        sql += ` AND location IN (${locations.map(() => '?').join(',')})`;
+        params.push(...locations);
+    }
+    if (minPrice) {
+        sql += ' AND price >= ?';
+        params.push(minPrice);
+    }
+    if (maxPrice) {
+        sql += ' AND price <= ?';
+        params.push(maxPrice);
+    }
+
+    db.all(sql, params, (err, products) => {
+        if (err) return res.status(500).json({ error: 'حدث خطأ أثناء جلب المنتجات' });
+        res.json(products);
+    });
 });
 
 app.get('/api/products/:id', (req, res) => {
@@ -278,17 +296,33 @@ app.get('/api/user/products', authenticateToken, (req, res) => {
 
 // Categories
 app.get('/api/categories', (req, res) => {
-    const categories = [
-        { id: 'electronics', name: 'إلكترونيات', icon: 'laptop' },
-        { id: 'men-clothing', name: 'ملابس رجالية', icon: 'tshirt' },
-        { id: 'women-clothing', name: 'ملابس نسائية', icon: 'tshirt' },
-        { id: 'furniture', name: 'أثاث', icon: 'couch' },
-        { id: 'books', name: 'كتب', icon: 'book' },
-        { id: 'toys', name: 'ألعاب', icon: 'gamepad' }
-    ];
-    
-    res.json(categories);
+    db.all('SELECT * FROM categories', (err, categories) => {
+        if (err) return res.status(500).json({ error: 'حدث خطأ أثناء جلب الفئات' });
+        
+        // Map to match your frontend structure
+        const formattedCategories = categories.map(cat => ({
+            id: cat.id,
+            name: cat.name,
+            icon: getCategoryIcon(cat.name)
+        }));
+        
+        res.json(formattedCategories);
+    });
 });
+
+function getCategoryIcon(categoryName) {
+    const icons = {
+        'Electronics': 'laptop',
+        'Clothing': 'tshirt',
+        'Home & Garden': 'home',
+        'Books': 'book',
+        'Toys': 'gamepad',
+        'Beauty': 'spa',
+        'Sports': 'futbol',
+        'Groceries': 'shopping-basket'
+    };
+    return icons[categoryName] || 'tag';
+}
 
 // Protect the sell page endpoint
 app.get('/sell', checkAuthenticated, (req, res) => {

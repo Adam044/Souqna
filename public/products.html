@@ -242,6 +242,7 @@
             line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -856,46 +857,86 @@
         
         let currentPage = 1;
         
+        // Replace the loadProducts function with this:
         async function loadProducts() {
             const container = document.getElementById('productsGrid');
+            container.innerHTML = '<div class="loading">جاري التحميل...</div>';
+            
+            // Get filter values
+            const searchQuery = document.getElementById('searchInput').value;
+            const category = getSelectedCategories();
+            const location = getSelectedLocations();
+            const minPrice = document.getElementById('priceRangeMin').value;
+            const maxPrice = document.getElementById('priceRangeMax').value;
             
             try {
-                const response = await fetch('/api/products');
+                // Build query string
+                const params = new URLSearchParams();
+                if (searchQuery) params.append('search', searchQuery);
+                if (category) params.append('category', category);
+                if (location) params.append('location', location);
+                if (minPrice) params.append('minPrice', minPrice);
+                if (maxPrice) params.append('maxPrice', maxPrice);
+                
+                const response = await fetch(`/api/products?${params.toString()}`);
                 const products = await response.json();
                 
-                if (!response.ok) {
-                    throw new Error('Failed to load products');
-                }
+                if (!response.ok) throw new Error('Failed to load products');
                 
-                container.innerHTML = products.map(product => `
-                    <div class="product-card">
-                        <div class="product-badge">${product.category_id}</div>
-                        <div class="product-image">
-                            <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-title">${product.title}</h3>
-                            <p class="product-description">${product.description.substring(0, 60)}...</p>
-                            <div class="product-meta">
-                                <span class="price">${product.price} ₪</span>
-                                <span class="location"><i class="fas fa-map-marker-alt"></i> ${product.seller_location}</span>
-                            </div>
-                            <a href="product.html?id=${product.id}" class="view-details">عرض التفاصيل</a>
-                        </div>
-                    </div>
-                `).join('');
-                
+                renderProducts(products);
             } catch (error) {
                 console.error('Error loading products:', error);
                 container.innerHTML = `
-                    <div class="error-state" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 20px;"></i>
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
                         <h3>حدث خطأ أثناء جلب المنتجات</h3>
-                        <p>يرجى المحاولة مرة أخرى لاحقاً</p>
-                        <button class="btn primary-btn" onclick="loadProducts()" style="margin-top: 15px;">إعادة المحاولة</button>
+                        <button onclick="loadProducts()">إعادة المحاولة</button>
                     </div>
                 `;
             }
+        }
+
+        function getSelectedCategories() {
+            const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
+            const selected = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selected.push(checkbox.nextElementSibling.textContent);
+                }
+            });
+            return selected.join(',');
+        }
+
+        function getSelectedLocations() {
+            const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
+            const selected = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selected.push(checkbox.nextElementSibling.textContent);
+                }
+            });
+            return selected.join(',');
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('productsGrid');
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-badge">${product.category_id}</div>
+                    <div class="product-image">
+                        <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-description">${product.description.substring(0, 60)}...</p>
+                        <div class="product-meta">
+                            <span class="price">${product.price} ₪</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> ${product.seller_location}</span>
+                        </div>
+                        <a href="product.html?id=${product.id}" class="view-details">عرض التفاصيل</a>
+                    </div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
