@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - سوقنا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E8B57;
+            --secondary: #CE1126;
+            --light: #F8F1E5;
+            --dark: #1E3A1E;
+            --accent: #FFD700;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Main Content */
+        .dashboard {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+        
+        .dashboard-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(46, 139, 87, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 1rem;
+        }
+        
+        .product-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .edit-btn {
+            background-color: rgba(46, 139, 87, 0.1);
+            color: var(--primary);
+        }
+        
+        .delete-btn {
+            background-color: rgba(206, 17, 38, 0.1);
+            color: var(--secondary);
+        }
+        
+        .add-product-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .add-product-btn:hover {
+            background: var(--dark);
+        }
+        
+        /* User Info Styles */
+        .user-info-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .user-info-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info-label {
+            font-weight: 700;
+            color: var(--primary);
+            margin-left: 0.5rem;
+        }
+
+        .edit-profile-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: var(--dark);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Add these new styles */
+        .editable-field {
+            position: relative;
+            padding-right: 30px;
+        }
+        
+        .edit-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+            color: var(--primary);
+        }
+        
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .edit-form input, .edit-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .save-btn, .cancel-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .save-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .cancel-btn {
+            background-color: #ddd;
+        }
+        
+        /* Product edit modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .close-modal {
+            float: left;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-store"></i>
+                سوقنا
+            </a>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard container">
+        <div class="dashboard-section">
+            <h2 class="section-title">معلوماتي الشخصية</h2>
+            <div id="userInfo" class="user-info-container">
+                <!-- User info will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-title">
+                <h2>منتجاتي</h2>
+                <a href="sell.html" class="add-product-btn">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </a>
+            </div>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3 class="modal-title">تعديل المنتج</h3>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+                
+                <div class="form-group">
+                    <label for="editTitle">عنوان المنتج</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPrice">السعر (₪)</label>
+                    <input type="number" id="editPrice" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">الوصف</label>
+                    <textarea id="editDescription" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">حفظ التغييرات</button>
+                    <button type="button" class="cancel-btn" id="cancelEdit">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Modal elements
+            const editModal = document.getElementById('editProductModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelEdit = document.getElementById('cancelEdit');
+            
+            // Close modal handlers
+            closeModal.addEventListener('click', () => editModal.style.display = 'none');
+            cancelEdit.addEventListener('click', () => editModal.style.display = 'none');
+            
+            // Click outside modal to close
+            window.addEventListener('click', (e) => {
+                if (e.target === editModal) {
+                    editModal.style.display = 'none';
+                }
+            });
+
+            // Load user info and products
+            loadUserInfo();
+            loadUserProducts();
+
+            async function loadUserInfo() {
+                try {
+                    const response = await fetch('/api/user', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to load user info');
+                    const user = await response.json();
+
+                    renderUserInfo(user);
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                    document.getElementById('userInfo').innerHTML = `
+                        <div style="color: var(--secondary);">
+                            حدث خطأ أثناء تحميل معلومات المستخدم
+                        </div>
+                    `;
+                }
+            }
+
+            function renderUserInfo(user) {
+                const userInfo = document.getElementById('userInfo');
+                userInfo.innerHTML = `
+                    <div class="user-info-item">
+                        <div class="editable-field">
+                            <span class="user-info-label">الاسم:</span> 
+                            <span id="userName">${user.name || 'غير محدد'}</span>
+                            <i class="fas fa-edit edit-icon" onclick="editField('name', '${user.name || ''}')"></i>
+                        </div>
+                        <div class="edit-form" id="editNameForm">
+                            <input type="text" id="nameInput" value="${user.name || ''}">
+                            <div class="form-actions">
+                                <button class="save-btn" onclick="saveField('name')">حفظ</button>
+                                <button class="cancel-btn" onclick="cancelEdit('name')">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-info-item">
+                        <div class="editable-field">
+                            <span class="user-info-label">البريد الإلكتروني:</span> 
+                            <span id="userEmail">${user.email || 'غير محدد'}</span>
+                        </div>
+                    </div>
+                    <div class="user-info-item">
+                        <div class="editable-field">
+                            <span class="user-info-label">الهاتف:</span> 
+                            <span id="userPhone">${user.phone || 'غير محدد'}</span>
+                            <i class="fas fa-edit edit-icon" onclick="editField('phone', '${user.phone || ''}')"></i>
+                        </div>
+                        <div class="edit-form" id="editPhoneForm">
+                            <input type="text" id="phoneInput" value="${user.phone || ''}">
+                            <div class="form-actions">
+                                <button class="save-btn" onclick="saveField('phone')">حفظ</button>
+                                <button class="cancel-btn" onclick="cancelEdit('phone')">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-info-item">
+                        <div class="editable-field">
+                            <span class="user-info-label">الموقع:</span> 
+                            <span id="userLocation">${user.location || 'غير محدد'}</span>
+                            <i class="fas fa-edit edit-icon" onclick="editField('location', '${user.location || ''}')"></i>
+                        </div>
+                        <div class="edit-form" id="editLocationForm">
+                            <input type="text" id="locationInput" value="${user.location || ''}">
+                            <div class="form-actions">
+                                <button class="save-btn" onclick="saveField('location')">حفظ</button>
+                                <button class="cancel-btn" onclick="cancelEdit('location')">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function loadUserProducts() {
+                const productsGrid = document.getElementById('productsGrid');
+                try {
+                    const response = await fetch('/api/user/products', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const products = await response.json();
+                    if (!response.ok) throw new Error('Failed to load products');
+
+                    if (products.length === 0) {
+                        productsGrid.innerHTML = `
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                                <p>لا يوجد لديك منتجات بعد</p>
+                                <a href="sell.html" class="add-product-btn">إضافة منتج جديد</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    renderProducts(products);
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                    productsGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                            <p>حدث خطأ أثناء تحميل المنتجات</p>
+                            <button onclick="loadUserProducts()" class="add-product-btn">إعادة المحاولة</button>
+                        </div>
+                    `;
+                }
+            }
+
+            function renderProducts(products) {
+                const productsGrid = document.getElementById('productsGrid');
+                productsGrid.innerHTML = products.map(product => `
+                    <div class="product-card">
+                        <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.title}</h3>
+                            <p class="product-price">${product.price} ₪</p>
+                            <div class="product-actions">
+                                <button class="action-btn edit-btn" onclick="openEditModal(${product.id}, '${product.title}', ${product.price}, '${product.description.replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-edit"></i> تعديل
+                                </button>
+                                <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})">
+                                    <i class="fas fa-trash"></i> حذف
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Edit product modal
+            window.openEditModal = function(id, title, price, description) {
+                document.getElementById('editProductId').value = id;
+                document.getElementById('editTitle').value = title;
+                document.getElementById('editPrice').value = price;
+                document.getElementById('editDescription').value = description;
+                editModal.style.display = 'flex';
+            };
+
+            // Handle edit form submission
+            document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('editProductId').value;
+                const title = document.getElementById('editTitle').value;
+                const price = document.getElementById('editPrice').value;
+                const description = document.getElementById('editDescription').value;
+                
+                try {
+                    const response = await fetch(`/api/products/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, price, description })
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to update product');
+                    
+                    editModal.style.display = 'none';
+                    loadUserProducts();
+                } catch (error) {
+                    console.error('Error updating product:', error);
+                    alert('حدث خطأ أثناء تحديث المنتج');
+                }
+            });
+
+            window.deleteProduct = async function(id) {
+                if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+
+                try {
+                    const response = await fetch(`/api/products/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to delete product');
+                    loadUserProducts();
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                    alert('حدث خطأ أثناء حذف المنتج');
+                }
+            };
+        });
+
+        // User info editing functions
+        function editField(field, currentValue) {
+            document.getElementById(`${field}Input`).value = currentValue;
+            document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`).style.display = 'block';
+        }
+
+        function cancelEdit(field) {
+            document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`).style.display = 'none';
+        }
+
+        async function saveField(field) {
+            const value = document.getElementById(`${field}Input`).value;
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch('/api/user', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ [field]: value })
+                });
+                
+                if (!response.ok) throw new Error('Failed to update user info');
+                
+                document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`).textContent = value || 'غير محدد';
+                document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`).style.display = 'none';
+            } catch (error) {
+                console.error('Error updating user info:', error);
+                alert('حدث خطأ أثناء تحديث المعلومات');
+            }
+        }
+    </script>
+</body>
+</html>

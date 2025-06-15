@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج - سوقنا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E8B57;
+            --secondary: #CE1126;
+            --light: #F8F1E5;
+            --dark: #1E3A1E;
+            --accent: #FFD700;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        /* Main Content */
+        .product-container {
+            margin-top: 80px;
+            padding: 2rem 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .product-gallery {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .thumbnail:hover {
+            border-color: var(--primary);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .product-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .product-description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .seller-info {
+            background: rgba(46, 139, 87, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .seller-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+        
+        .seller-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .seller-name {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .seller-join-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .contact-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .contact-btn:hover {
+            background: var(--dark);
+        }
+        
+        .similar-products {
+            margin-top: 3rem;
+            grid-column: 1 / -1;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .similar-product {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .similar-product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .similar-product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .similar-product-info {
+            padding: 1rem;
+        }
+        
+        .similar-product-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .similar-product-price {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .view-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 8px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .view-btn:hover {
+            background: var(--dark);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-image {
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-store"></i>
+                سوقنا
+            </a>
+            
+            <div class="nav-links">
+                <a href="login.html" class="nav-link">تسجيل الدخول</a>
+                <a href="register.html" class="nav-link">إنشاء حساب</a>
+                <a href="sell.html" class="nav-link">بيع منتج</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Details -->
+    <main class="container">
+        <div class="product-container">
+            <div class="product-gallery" id="productGallery">
+                <!-- Main image will be loaded here -->
+            </div>
+            
+            <div class="product-info">
+                <h1 class="product-title" id="productTitle"></h1>
+                <div class="product-price" id="productPrice"></div>
+                
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-tag"></i>
+                        <span id="productCategory"></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-star"></i>
+                        <span id="productCondition"></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="productLocation"></span>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">وصف المنتج</h3>
+                <div class="product-description" id="productDescription"></div>
+                
+                <div class="seller-info">
+                    <h3 class="section-title">معلومات البائع</h3>
+                    <div class="seller-header">
+                        <div class="seller-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="seller-name" id="sellerName"></div>
+                            <div class="seller-join-date">عضو منذ <span id="joinDate"></span></div>
+                        </div>
+                    </div>
+                    <a href="#" class="contact-btn" id="contactBtn">
+                        <i class="fas fa-phone"></i> اتصل بالبائع
+                    </a>
+                </div>
+            </div>
+            
+            <div class="similar-products">
+                <h3 class="section-title">منتجات مشابهة</h3>
+                <div class="products-grid" id="similarProducts">
+                    <!-- Similar products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get product ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (!productId) {
+                window.location.href = 'products.html';
+                return;
+            }
+            
+            // Load product details
+            loadProductDetails(productId);
+            
+            async function loadProductDetails(id) {
+                try {
+                    const response = await fetch(`/api/products/${id}`);
+                    const product = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error('Product not found');
+                    }
+                    
+                    // Display product info
+                    document.getElementById('productTitle').textContent = product.title;
+                    document.getElementById('productPrice').textContent = `${product.price} ₪`;
+                    document.getElementById('productCategory').textContent = product.category;
+                    document.getElementById('productCondition').textContent = product.condition;
+                    document.getElementById('productDescription').textContent = product.description;
+                    document.getElementById('productLocation').textContent = product.seller_location;
+                    document.getElementById('sellerName').textContent = product.seller_name;
+                    
+                    // Format join date
+                    const joinDate = new Date(product.seller_join_date);
+                    document.getElementById('joinDate').textContent = joinDate.toLocaleDateString('ar-EG');
+                    
+                    // Set contact button
+                    document.getElementById('contactBtn').href = `tel:${product.seller_phone}`;
+                    
+                    // Display images
+                    const gallery = document.getElementById('productGallery');
+                    gallery.innerHTML = '';
+                    
+                    if (product.images.length > 0) {
+                        // Main image
+                        const mainImage = document.createElement('div');
+                        mainImage.className = 'main-image';
+                        mainImage.innerHTML = `<img src="${product.images[0]}" alt="${product.title}">`;
+                        gallery.appendChild(mainImage);
+                        
+                        // Thumbnails
+                        if (product.images.length > 1) {
+                            const thumbnails = document.createElement('div');
+                            thumbnails.className = 'thumbnails';
+                            
+                            product.images.forEach((image, index) => {
+                                const thumb = document.createElement('div');
+                                thumb.className = 'thumbnail';
+                                thumb.innerHTML = `<img src="${image}" alt="${product.title} ${index + 1}">`;
+                                thumb.addEventListener('click', () => {
+                                    mainImage.innerHTML = `<img src="${image}" alt="${product.title}">`;
+                                });
+                                thumbnails.appendChild(thumb);
+                            });
+                            
+                            gallery.appendChild(thumbnails);
+                        }
+                    }
+                    
+                    // Load similar products
+                    loadSimilarProducts(product.category, product.id);
+                    
+                } catch (error) {
+                    console.error('Error loading product:', error);
+                    window.location.href = 'products.html';
+                }
+            }
+            
+            async function loadSimilarProducts(category, excludeId) {
+                try {
+                    const response = await fetch(`/api/products?category=${category}&limit=4`);
+                    const products = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to load similar products');
+                    }
+                    
+                    const similarProducts = products.filter(p => p.id !== excludeId);
+                    const container = document.getElementById('similarProducts');
+                    
+                    if (similarProducts.length === 0) {
+                        container.innerHTML = '<p>لا توجد منتجات مشابهة حالياً</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = similarProducts.map(product => `
+                        <div class="similar-product">
+                            <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" class="similar-product-image">
+                            <div class="similar-product-info">
+                                <h4 class="similar-product-title">${product.title}</h4>
+                                <div class="similar-product-price">${product.price} ₪</div>
+                                <a href="product.html?id=${product.id}" class="view-btn">عرض التفاصيل</a>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                } catch (error) {
+                    console.error('Error loading similar products:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
