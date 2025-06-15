@@ -246,8 +246,7 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', authenticateToken, upload.array('images', 5), (req, res) => {
-    const { title, price, description, category, images } = req.body;
-    const category_id = category; // or req.body.category_id if that's what your frontend sends
+    const { title, price, description, category } = req.body;
     const seller_id = req.user.id;
     
     if (!req.files || req.files.length === 0) {
@@ -258,11 +257,18 @@ app.post('/api/products', authenticateToken, upload.array('images', 5), (req, re
     
     db.run(
         'INSERT INTO products (title, price, description, category_id, images, seller_id) VALUES (?, ?, ?, ?, ?, ?)',
-        [title, price, description, category_id, JSON.stringify(imagePaths), seller_id],
+        [title, price, description, category, JSON.stringify(imagePaths), seller_id],
         function(err) {
-            if (err) return res.status(400).json({ error: 'حدث خطأ أثناء إضافة المنتج' });
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'حدث خطأ أثناء إضافة المنتج' });
+            }
             
-            res.json({ id: this.lastID });
+            res.json({ 
+                success: true,
+                id: this.lastID,
+                message: 'تم إضافة المنتج بنجاح'
+            });
         }
     );
 });

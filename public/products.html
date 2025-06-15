@@ -775,93 +775,95 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
-            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-                document.getElementById('mobileMenu').classList.toggle('active');
-            });
-            
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
-                    document.getElementById('mobileMenu').classList.remove('active');
-                }
-            });
-            
-            // Filter modal
-            const filterModal = document.getElementById('filterModal');
-            const openFilter = document.getElementById('openFilter');
-            const closeFilter = document.getElementById('closeFilter');
-            
-            openFilter.addEventListener('click', () => {
-                filterModal.classList.add('active');
-            });
-            
-            closeFilter.addEventListener('click', () => {
-                filterModal.classList.remove('active');
-            });
-            
-            filterModal.addEventListener('click', (e) => {
-                if (e.target === filterModal) {
-                    filterModal.classList.remove('active');
-                }
-            });
-            
-            // Price range slider
-            const priceRangeMin = document.getElementById('priceRangeMin');
-            const priceRangeMax = document.getElementById('priceRangeMax');
-            const minPriceDisplay = document.getElementById('minPrice');
-            const maxPriceDisplay = document.getElementById('maxPrice');
-            
-            function updatePriceDisplay() {
-                minPriceDisplay.textContent = `${priceRangeMin.value} ₪`;
-                maxPriceDisplay.textContent = `${priceRangeMax.value} ₪`;
-            }
-            
-            priceRangeMin.addEventListener('input', function() {
-                if (parseInt(priceRangeMin.value) > parseInt(priceRangeMax.value)) {
-                    priceRangeMin.value = priceRangeMax.value;
-                }
-                updatePriceDisplay();
-            });
-            
-            priceRangeMax.addEventListener('input', function() {
-                if (parseInt(priceRangeMax.value) < parseInt(priceRangeMin.value)) {
-                    priceRangeMax.value = priceRangeMin.value;
-                }
-                updatePriceDisplay();
-            });
-            
-            // Load products
-            loadProducts();
-            
-            // Apply filters
-            document.getElementById('applyFilters').addEventListener('click', function() {
-                filterModal.classList.remove('active');
-                currentPage = 1;
-                loadProducts();
-            });
-            
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') {
-                    currentPage = 1;
-                    loadProducts();
-                }
-            });
-            
-            // Load more products
-            document.getElementById('loadMoreBtn').addEventListener('click', loadProducts);
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
         });
         
-        let currentPage = 1;
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
+                document.getElementById('mobileMenu').classList.remove('active');
+            }
+        });
         
-        // Replace the loadProducts function with this:
-        async function loadProducts() {
-            const container = document.getElementById('productsGrid');
-            container.innerHTML = '<div class="loading">جاري التحميل...</div>';
-            
+        // Filter modal
+        const filterModal = document.getElementById('filterModal');
+        const openFilter = document.getElementById('openFilter');
+        const closeFilter = document.getElementById('closeFilter');
+        
+        openFilter.addEventListener('click', () => {
+            filterModal.classList.add('active');
+        });
+        
+        closeFilter.addEventListener('click', () => {
+            filterModal.classList.remove('active');
+        });
+        
+        filterModal.addEventListener('click', (e) => {
+            if (e.target === filterModal) {
+                filterModal.classList.remove('active');
+            }
+        });
+        
+        // Price range slider
+        const priceRangeMin = document.getElementById('priceRangeMin');
+        const priceRangeMax = document.getElementById('priceRangeMax');
+        const minPriceDisplay = document.getElementById('minPrice');
+        const maxPriceDisplay = document.getElementById('maxPrice');
+        
+        function updatePriceDisplay() {
+            minPriceDisplay.textContent = `${priceRangeMin.value} ₪`;
+            maxPriceDisplay.textContent = `${priceRangeMax.value} ₪`;
+        }
+        
+        priceRangeMin.addEventListener('input', function() {
+            if (parseInt(priceRangeMin.value) > parseInt(priceRangeMax.value)) {
+                priceRangeMin.value = priceRangeMax.value;
+            }
+            updatePriceDisplay();
+        });
+        
+        priceRangeMax.addEventListener('input', function() {
+            if (parseInt(priceRangeMax.value) < parseInt(priceRangeMin.value)) {
+                priceRangeMax.value = priceRangeMin.value;
+            }
+            updatePriceDisplay();
+        });
+        
+        // Initial load
+        loadProducts();
+        
+        // Apply filters
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            filterModal.classList.remove('active');
+            loadProducts();
+        });
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                loadProducts();
+            }
+        });
+        
+        // Load more products
+        document.getElementById('loadMoreBtn').addEventListener('click', loadProducts);
+    });
+    
+    let currentPage = 1;
+    
+    async function loadProducts() {
+        const container = document.getElementById('productsGrid');
+        const loader = document.createElement('div');
+        loader.className = 'loading';
+        loader.textContent = 'جاري التحميل...';
+        container.innerHTML = '';
+        container.appendChild(loader);
+        
+        try {
             // Get filter values
             const searchQuery = document.getElementById('searchInput').value;
             const category = getSelectedCategories();
@@ -869,75 +871,81 @@
             const minPrice = document.getElementById('priceRangeMin').value;
             const maxPrice = document.getElementById('priceRangeMax').value;
             
-            try {
-                // Build query string
-                const params = new URLSearchParams();
-                if (searchQuery) params.append('search', searchQuery);
-                if (category) params.append('category', category);
-                if (location) params.append('location', location);
-                if (minPrice) params.append('minPrice', minPrice);
-                if (maxPrice) params.append('maxPrice', maxPrice);
-                
-                const response = await fetch(`/api/products?${params.toString()}`);
-                const products = await response.json();
-                
-                if (!response.ok) throw new Error('Failed to load products');
-                
-                renderProducts(products);
-            } catch (error) {
-                console.error('Error loading products:', error);
-                container.innerHTML = `
-                    <div class="error-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>حدث خطأ أثناء جلب المنتجات</h3>
-                        <button onclick="loadProducts()">إعادة المحاولة</button>
-                    </div>
-                `;
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (searchQuery) params.append('search', searchQuery);
+            if (category) params.append('category', category);
+            if (location) params.append('location', location);
+            if (minPrice) params.append('minPrice', minPrice);
+            if (maxPrice) params.append('maxPrice', maxPrice);
+            params.append('page', currentPage);
+            
+            const response = await fetch(`/api/products?${params.toString()}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to load products');
             }
-        }
-
-        function getSelectedCategories() {
-            const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
-            const selected = [];
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selected.push(checkbox.nextElementSibling.textContent);
-                }
-            });
-            return selected.join(',');
-        }
-
-        function getSelectedLocations() {
-            const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
-            const selected = [];
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selected.push(checkbox.nextElementSibling.textContent);
-                }
-            });
-            return selected.join(',');
-        }
-
-        function renderProducts(products) {
-            const container = document.getElementById('productsGrid');
-            container.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <div class="product-badge">${product.category_id}</div>
-                    <div class="product-image">
-                        <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" loading="lazy">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${product.title}</h3>
-                        <p class="product-description">${product.description.substring(0, 60)}...</p>
-                        <div class="product-meta">
-                            <span class="price">${product.price} ₪</span>
-                            <span class="location"><i class="fas fa-map-marker-alt"></i> ${product.seller_location}</span>
-                        </div>
-                        <a href="product.html?id=${product.id}" class="view-details">عرض التفاصيل</a>
-                    </div>
+            
+            const products = await response.json();
+            
+            if (products.length === 0 && currentPage === 1) {
+                container.innerHTML = '<div class="no-products">لا توجد منتجات متاحة</div>';
+                return;
+            }
+            
+            renderProducts(products);
+            currentPage++;
+        } catch (error) {
+            console.error('Error loading products:', error);
+            container.innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>حدث خطأ أثناء جلب المنتجات</h3>
+                    <p>${error.message}</p>
+                    <button onclick="loadProducts()" class="retry-btn">إعادة المحاولة</button>
                 </div>
-            `).join('');
+            `;
         }
-    </script>
+    }
+    
+    function getSelectedCategories() {
+        const checkboxes = document.querySelectorAll('#filterModal .filter-options input[type="checkbox"]:checked');
+        return Array.from(checkboxes).map(cb => cb.id).join(',');
+    }
+    
+    function getSelectedLocations() {
+        const checkboxes = document.querySelectorAll('#filterModal .location-options input[type="checkbox"]:checked');
+        return Array.from(checkboxes).map(cb => cb.id).join(',');
+    }
+    
+    function renderProducts(products) {
+        const container = document.getElementById('productsGrid');
+        
+        if (currentPage === 1) {
+            container.innerHTML = '';
+        }
+        
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <div class="product-badge">${product.category_id}</div>
+                <div class="product-image">
+                    <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">${product.title}</h3>
+                    <p class="product-description">${product.description.substring(0, 60)}...</p>
+                    <div class="product-meta">
+                        <span class="price">${product.price} ₪</span>
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> ${product.seller_location}</span>
+                    </div>
+                    <a href="product.html?id=${product.id}" class="view-details">عرض التفاصيل</a>
+                </div>
+            `;
+            container.appendChild(productCard);
+        });
+    }
+</script>
 </body>
 </html>
