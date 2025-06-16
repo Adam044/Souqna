@@ -861,9 +861,6 @@
         
         try {
             const params = new URLSearchParams(window.location.search);
-            const searchQuery = document.getElementById('searchInput').value;
-            
-            // Get filter values from URL or UI
             const category = params.get('category') || getSelectedCategories();
             const location = getSelectedLocations();
             const minPrice = document.getElementById('priceRangeMin').value;
@@ -956,5 +953,6 @@
     }).join('');
 }
 </script>
+<script src="authHeader.js"></script>
 </body>
 </html>

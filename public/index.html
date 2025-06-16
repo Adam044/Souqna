@@ -489,42 +489,42 @@
         <div class="container">
             <h2 class="section-title">تصفح حسب الفئة</h2>
             <div class="categories-grid">
-                <a href="products.html?category=electronics" class="category-card">
+                <a href="products.html?category=electronics" class="category-card" data-category-id="1">
                     <div class="category-icon">
                         <i class="fas fa-laptop"></i>
                     </div>
                     <h3>إلكترونيات</h3>
                 </a>
                 
-                <a href="products.html?category=furniture" class="category-card">
+                <a href="products.html?category=furniture" class="category-card" data-category-id="9">
                     <div class="category-icon">
                         <i class="fas fa-couch"></i>
                     </div>
                     <h3>أثاث</h3>
                 </a>
                 
-                <a href="products.html?category=clothing" class="category-card">
+                <a href="products.html?category=clothing" class="category-card" data-category-id="2">
                     <div class="category-icon">
                         <i class="fas fa-tshirt"></i>
                     </div>
                     <h3>ملابس</h3>
                 </a>
                 
-                <a href="products.html?category=vehicles" class="category-card">
+                <a href="products.html?category=vehicles" class="category-card" data-category-id="8">
                     <div class="category-icon">
                         <i class="fas fa-car"></i>
                     </div>
                     <h3>مركبات</h3>
                 </a>
                 
-                <a href="products.html?category=books" class="category-card">
+                <a href="products.html?category=books" class="category-card" data-category-id="4">
                     <div class="category-icon">
                         <i class="fas fa-book"></i>
                     </div>
                     <h3>كتب</h3>
                 </a>
                 
-                <a href="products.html?category=toys" class="category-card">
+                <a href="products.html?category=toys" class="category-card" data-category-id="5">
                     <div class="category-icon">
                         <i class="fas fa-gamepad"></i>
                     </div>
@@ -660,12 +660,12 @@
 updateHeader();
 
 document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', function(e) {
-        e.preventDefault();
-        const category = this.getAttribute('href').split('=')[1];
-        window.location.href = `products.html?category=${category}`;
+    card.addEventListener('click', () => {
+        const catId = card.dataset.categoryId;
+        window.location.href = `products.html?category=${catId}`;
     });
 });
     </script>
+    <script src="authHeader.js"></script>
 </body>
 </html>

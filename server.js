@@ -408,6 +408,14 @@ app.put('/api/products/:id', authenticateToken, (req, res) => {
     });
 });
 
+app.delete('/api/products/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    db.run('DELETE FROM products WHERE id = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: 'فشل حذف المنتج' });
+        res.json({ success: true });
+    });
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

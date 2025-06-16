@@ -647,6 +647,7 @@
                     'Authorization': `Bearer ${token}`
                 }
             });
+            const result = await response.json();
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -705,5 +706,6 @@
             }
         });
     </script>
+<script src="authHeader.js"></script>
 </body>
 </html>
