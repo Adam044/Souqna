@@ -857,44 +857,38 @@
     
     async function loadProducts() {
         const container = document.getElementById('productsGrid');
-        const loader = document.createElement('div');
-        loader.className = 'loading';
-        loader.textContent = 'جاري التحميل...';
-        container.innerHTML = '';
-        container.appendChild(loader);
+        container.innerHTML = '<div class="loading">جاري التحميل...</div>';
         
         try {
-            // Get filter values
+            const params = new URLSearchParams(window.location.search);
             const searchQuery = document.getElementById('searchInput').value;
-            const category = getSelectedCategories();
+            
+            // Get filter values from URL or UI
+            const category = params.get('category') || getSelectedCategories();
             const location = getSelectedLocations();
             const minPrice = document.getElementById('priceRangeMin').value;
             const maxPrice = document.getElementById('priceRangeMax').value;
             
-            // Build query parameters
-            const params = new URLSearchParams();
-            if (searchQuery) params.append('search', searchQuery);
-            if (category) params.append('category', category);
-            if (location) params.append('location', location);
-            if (minPrice) params.append('minPrice', minPrice);
-            if (maxPrice) params.append('maxPrice', maxPrice);
-            params.append('page', currentPage);
+            // Build API request
+            const queryParams = new URLSearchParams();
+            if (searchQuery) queryParams.append('search', searchQuery);
+            if (category) queryParams.append('category', category);
+            if (location) queryParams.append('location', location);
+            if (minPrice) queryParams.append('minPrice', minPrice);
+            if (maxPrice) queryParams.append('maxPrice', maxPrice);
             
-            const response = await fetch(`/api/products?${params.toString()}`);
+            const response = await fetch(`/api/products?${queryParams.toString()}`);
             
-            if (!response.ok) {
-                throw new Error('Failed to load products');
-            }
+            if (!response.ok) throw new Error('Failed to load products');
             
             const products = await response.json();
             
-            if (products.length === 0 && currentPage === 1) {
+            if (products.length === 0) {
                 container.innerHTML = '<div class="no-products">لا توجد منتجات متاحة</div>';
                 return;
             }
             
             renderProducts(products);
-            currentPage++;
         } catch (error) {
             console.error('Error loading products:', error);
             container.innerHTML = `
@@ -933,19 +927,20 @@
     }
     
     function renderProducts(products) {
-        const container = document.getElementById('productsGrid');
+    const container = document.getElementById('productsGrid');
+    container.innerHTML = products.map(product => {
+        // Parse images if they're stored as JSON string
+        const images = typeof product.images === 'string' ? 
+            JSON.parse(product.images) : 
+            product.images || [];
         
-        if (currentPage === 1) {
-            container.innerHTML = '';
-        }
+        const mainImage = images.length > 0 ? images[0] : 'https://via.placeholder.com/300';
         
-        products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.innerHTML = `
+        return `
+            <div class="product-card">
                 <div class="product-badge">${product.category_id}</div>
                 <div class="product-image">
-                    <img src="${product.images[0] || 'https://via.placeholder.com/300'}" alt="${product.title}" loading="lazy">
+                    <img src="${mainImage}" alt="${product.title}" loading="lazy">
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">${product.title}</h3>
@@ -956,10 +951,10 @@
                     </div>
                     <a href="product.html?id=${product.id}" class="view-details">عرض التفاصيل</a>
                 </div>
-            `;
-            container.appendChild(productCard);
-        });
-    }
+            </div>
+        `;
+    }).join('');
+}
 </script>
 </body>
 </html>
